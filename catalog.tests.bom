@@ -60,7 +60,7 @@ brooklyn.catalog:
             targetId: tomcat
             effector: deploy
             params:
-              url: https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+              url: https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war
               targetName: sample
         
         - type: org.apache.brooklyn.test.framework.TestCase
