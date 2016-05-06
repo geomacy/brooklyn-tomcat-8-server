@@ -41,6 +41,8 @@ brooklyn.catalog:
             keyAlias: tomcat
             keystoreUrl: https://github.com/brooklyncentral/brooklyn-tomcat-8-server/raw/master/sample-keystore
       - type: org.apache.brooklyn.test.framework.TestCase
+        brooklyn.config:
+          timeout: 15m
         name: Tomcat Tests
         brooklyn.children:
         - type: org.apache.brooklyn.test.framework.TestCase
@@ -48,19 +50,17 @@ brooklyn.catalog:
           brooklyn.children:
           # Is up and can deploy
           - type: org.apache.brooklyn.test.framework.TestSensor
-            name: TEST [service.state] IS [running] WITHIN [10m]
+            name: TEST [service.state] IS [running]
             target: $brooklyn:component("tomcat")
             sensor: service.state
-            timeout: 10m
             assert:
             - matches: running
           - type: org.apache.brooklyn.test.framework.TestEffector
             name: Invoke Deploy Effector
             targetId: tomcat
             effector: deploy
-            timeout: 5m
             params:
-              url: https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war
+              url: https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
               targetName: sample
         
         - type: org.apache.brooklyn.test.framework.TestCase
@@ -73,12 +73,10 @@ brooklyn.catalog:
             effector: restart
             params:
               restartMachine: false
-            timeout: 5m
           - type: org.apache.brooklyn.test.framework.TestSensor
             name: Check Tomcat is up after restart
             targetId: tomcat
             sensor: service.isUp
-            timeout: 1m
             assert:
             - equals: true
           - type: org.apache.brooklyn.test.framework.SimpleShellCommandTest
@@ -87,10 +85,6 @@ brooklyn.catalog:
             command: ps -ef | grep [t]omcat
             assertStatus:
               equals: 0
-            assertOut:
-              isEmpty: false
-            assertErr:
-              isEmpty: true
           # Effector: stop + restart Tests
           - type: org.apache.brooklyn.test.framework.TestEffector
             name: Invoke stop Effector
@@ -98,12 +92,10 @@ brooklyn.catalog:
             effector: stop
             params:
               stopMachineMode: NEVER
-            timeout: 5m
           - type: org.apache.brooklyn.test.framework.TestSensor
             name: Check Tomcat is not up after stop
             targetId: tomcat
             sensor: service.isUp
-            timeout: 5m
             assert:
             - equals: false
           - type: org.apache.brooklyn.test.framework.SimpleShellCommandTest
@@ -112,22 +104,16 @@ brooklyn.catalog:
             command: ps -ef | grep [t]omcat
             assertStatus:
               equals: 1
-            assertOut:
-              isEmpty: true
-            assertErr:
-              isEmpty: true
           - type: org.apache.brooklyn.test.framework.TestEffector
             name: Invoke restart Effector
             targetId: tomcat
             effector: restart
             params:
               restartMachine: false
-            timeout: 5m
           - type: org.apache.brooklyn.test.framework.TestSensor
             name: Check Tomcat is up after restart
             targetId: tomcat
             sensor: service.isUp
-            timeout: 1m
             assert:
             - equals: true
           - type: org.apache.brooklyn.test.framework.SimpleShellCommandTest
@@ -136,10 +122,6 @@ brooklyn.catalog:
             command: ps -ef | grep [t]omcat
             assertStatus:
               equals: 0
-            assertOut:
-              isEmpty: false
-            assertErr:
-              isEmpty: true
         
         - type: org.apache.brooklyn.test.framework.TestCase
           name: "HTTP / HTTPS Tests"
@@ -151,7 +133,6 @@ brooklyn.catalog:
               $brooklyn:formatString("http://%s:%s/sample/hello",
               $brooklyn:component("tomcat").attributeWhenReady("host.address"),
               $brooklyn:component("tomcat").attributeWhenReady("http.port"))
-            timeout: 10m
             applyAssertionTo: status
             assert:
             - isEqualTo: 200
@@ -161,7 +142,6 @@ brooklyn.catalog:
               $brooklyn:formatString("http://%s:%s/sample/hello.jsp",
               $brooklyn:component("tomcat").attributeWhenReady("host.address"),
               $brooklyn:component("tomcat").attributeWhenReady("http.port"))
-            timeout: 10m
             applyAssertionTo: status
             assert:
             - isEqualTo: 200
@@ -173,7 +153,6 @@ brooklyn.catalog:
               $brooklyn:formatString("https://%s:%s/sample/hello",
               $brooklyn:component("tomcat").attributeWhenReady("host.address"),
               $brooklyn:component("tomcat").attributeWhenReady("https.port"))
-            timeout: 10m
             applyAssertionTo: status
             assert:
             - isEqualTo: 200
@@ -183,7 +162,6 @@ brooklyn.catalog:
               $brooklyn:formatString("https://%s:%s/sample/hello.jsp",
               $brooklyn:component("tomcat").attributeWhenReady("host.address"),
               $brooklyn:component("tomcat").attributeWhenReady("https.port"))
-            timeout: 10m
             applyAssertionTo: status
             assert:
             - isEqualTo: 200
