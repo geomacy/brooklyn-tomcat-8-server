@@ -43,6 +43,7 @@ brooklyn.catalog:
       - type: org.apache.brooklyn.test.framework.TestCase
         brooklyn.config:
           timeout: 15m
+          targetId: tomcat
         name: Tomcat Tests
         brooklyn.children:
         - type: org.apache.brooklyn.test.framework.TestCase
@@ -57,7 +58,6 @@ brooklyn.catalog:
             - matches: running
           - type: org.apache.brooklyn.test.framework.TestEffector
             name: Invoke Deploy Effector
-            targetId: tomcat
             effector: deploy
             params:
               url: https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war
@@ -69,56 +69,47 @@ brooklyn.catalog:
           # Effector: restart Tests
           - type: org.apache.brooklyn.test.framework.TestEffector
             name: Invoke restart Effector
-            targetId: tomcat
             effector: restart
             params:
               restartMachine: false
           - type: org.apache.brooklyn.test.framework.TestSensor
             name: Check Tomcat is up after restart
-            targetId: tomcat
             sensor: service.isUp
             assert:
             - equals: true
           - type: org.apache.brooklyn.test.framework.SimpleShellCommandTest
             name: Check Tomcat process has restarted
-            targetId: tomcat
             command: ps -ef | grep [t]omcat
             assertStatus:
               equals: 0
           # Effector: stop + restart Tests
           - type: org.apache.brooklyn.test.framework.TestEffector
             name: Invoke stop Effector
-            targetId: tomcat
             effector: stop
             params:
               stopMachineMode: NEVER
           - type: org.apache.brooklyn.test.framework.TestSensor
             name: Check Tomcat is not up after stop
-            targetId: tomcat
             sensor: service.isUp
             assert:
             - equals: false
           - type: org.apache.brooklyn.test.framework.SimpleShellCommandTest
             name: Check Tomcat process has stopped
-            targetId: tomcat
             command: ps -ef | grep [t]omcat
             assertStatus:
               equals: 1
           - type: org.apache.brooklyn.test.framework.TestEffector
             name: Invoke restart Effector
-            targetId: tomcat
             effector: restart
             params:
               restartMachine: false
           - type: org.apache.brooklyn.test.framework.TestSensor
             name: Check Tomcat is up after restart
-            targetId: tomcat
             sensor: service.isUp
             assert:
             - equals: true
           - type: org.apache.brooklyn.test.framework.SimpleShellCommandTest
             name: Check Tomcat process has restarted
-            targetId: tomcat
             command: ps -ef | grep [t]omcat
             assertStatus:
               equals: 0
