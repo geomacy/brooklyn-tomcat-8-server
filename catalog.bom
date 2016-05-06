@@ -17,15 +17,17 @@
 # under the License.
 #
 brooklyn.catalog:
-  id: brooklyn-tomcat-server
+  id: brooklyn-tomcat-8-server
   version: 0.10.0-SNAPSHOT
-  name: Tomcat Server
+  name: Tomcat 8 Server
   description: Apache Tomcat is an open source software implementation of the Java Servlet and JavaServer Pages technologies
   itemType: template
+  iconUrl: http://tomcat.apache.org/images/tomcat-power.gif
   license: Apache-2.0
   publish:
     license_code: Apache-2.0
     reference: reference.json
+    qa: catalog.tests.bom
   item:
     services:
     - type: org.apache.brooklyn.entity.webapp.tomcat.Tomcat8Server
