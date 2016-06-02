@@ -42,7 +42,7 @@ brooklyn.catalog:
             keystoreUrl: https://github.com/brooklyncentral/brooklyn-tomcat-8-server/raw/master/sample-keystore
       - type: org.apache.brooklyn.test.framework.TestCase
         brooklyn.config:
-          timeout: 15m
+          timeout: 1h
           targetId: tomcat
         name: Tomcat Tests
         brooklyn.children:
