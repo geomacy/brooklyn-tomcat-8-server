@@ -28,6 +28,9 @@ brooklyn.catalog:
     license_code: Apache-2.0
     reference: reference.json
     qa: catalog.tests.bom
+  brooklyn.libraries:
+  - name: org.apache.brooklyn.software-webapp
+    version: 0.10.0.SNAPSHOT
   item:
     services:
     - type: org.apache.brooklyn.entity.webapp.tomcat.Tomcat8Server
